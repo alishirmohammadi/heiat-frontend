@@ -24,7 +24,7 @@
                 </b-form-group>
 
                 <b-button
-                        :disabled="status!=='default' || (!chosenEspenseId && !fixedExpense )|| !amount"
+                        :disabled="status!=='default' || (!chosenEspenseId && !fixedExpense ) || !amount"
                         type="submit"
                         variant="success"
                 >
