@@ -16,20 +16,21 @@
                     <b-form-input :disabled="amountSet" placeholder="مبلغ به تومان" required type="number"
                                   v-model="amount"></b-form-input>
                 </b-form-group>
-                <b-form-group label="نام و نام خانوادگی (اختیاری):">
+                <b-form-group label="نام و نام خانوادگی (اختیاری):" v-if="status!=='auto_send'">
                     <b-form-input type="text" v-model="optional_name"></b-form-input>
                 </b-form-group>
-                <b-form-group label="شمارهٔ تلفن (اختیاری):">
+                <b-form-group label="شمارهٔ تلفن (اختیاری):" v-if="status!=='auto_send'">
                     <b-form-input type="number" v-model="optional_mobile"></b-form-input>
                 </b-form-group>
 
                 <b-button
-                        :disabled="status==='sending' || (!chosenEspenseId && !fixedExpense )|| !amount"
+                        :disabled="status!=='default' || (!chosenEspenseId && !fixedExpense )|| !amount"
                         type="submit"
                         variant="success"
                 >
-                    <span v-show="status!=='sending'">پرداخت</span>
+                    <span v-show="status==='default'">پرداخت</span>
                     <span v-show="status==='sending'">در حال انجام</span>
+                    <span v-show="status==='auto_send'">درحال انتقال به درگاه پرداخت</span>
                 </b-button>
             </b-form>
             <form
@@ -95,6 +96,7 @@
                                 this.amountSet = true;
                                 if (this.$route.params.direct) {
                                     console.log(this.$route.params.direct);
+                                    this.status = "auto_send";
                                     HTTP.post("pay/terminal/start/", {
                                         amount: this.amount,
                                         expense_id: expense.id,
