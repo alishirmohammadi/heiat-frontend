@@ -8,7 +8,7 @@
                 <b-form-group label="مورد مصرف:" v-if="!fixed">
                     <b-form-select :options="expenses" v-model="expense_id"/>
                 </b-form-group>
-                <b-form-group label="مبلغ:">
+                <b-form-group label="مبلغ (به تومان):">
                     <b-form-input placeholder="مبلغ به تومان"
                                   required
                                   type="number"
