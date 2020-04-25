@@ -7,13 +7,14 @@
                 </div>
                 <h1>{{fixedExpense.expense_name}}</h1>
             </div>
-            <b-form @submit="onSubmit" v-if="status!=='success'">
+            <b-form @submit="onSubmit" ref="mainForm" v-if="status!=='success'">
                 <b-form-group label="مورد مصرف:" v-if="!fixedExpense">
                     <b-form-select :options="expenses" text-field="expense_name"
                                    v-model="chosenEspenseId" value-field="id"></b-form-select>
                 </b-form-group>
-                <b-form-group label="مبلغ:">
-                    <b-form-input placeholder="مبلغ به تومان" required type="number" v-model="amount"></b-form-input>
+                <b-form-group label="مبلغ (تومان):">
+                    <b-form-input :disabled="amountSet" placeholder="مبلغ به تومان" required type="number"
+                                  v-model="amount"></b-form-input>
                 </b-form-group>
                 <b-form-group label="نام و نام خانوادگی (اختیاری):">
                     <b-form-input type="text" v-model="optional_name"></b-form-input>
@@ -57,7 +58,8 @@
                 optional_name: "",
                 optional_mobile: "",
                 status: "default",
-                refId: ""
+                refId: "",
+                amountSet: false,
             };
         },
         created() {
@@ -74,13 +76,30 @@
                     });
                 }
                 return null;
-            }
+            },
         },
         methods: {
             fetchData() {
                 HTTP.get("expenses?format=json")
                     .then(resp => {
                         this.expenses = resp.data;
+
+                        if (this.$route.params.expense_address) {
+                            let expense = _.find(this.expenses, {
+                                "address": this.$route.params.expense_address
+                            });
+
+                            let amount = parseFloat(this.$route.params.amount);
+                            if (amount) {
+                                this.amount = amount * expense.contribution;
+                                this.amountSet = true;
+                                console.log(this.$route.params.direct);
+                                if (this.$route.params.direct) {
+                                    this.$refs.mainForm.submit();
+                                }
+                            }
+                        }
+
                     })
                     .catch(err => {
                         console.log(err);
@@ -95,6 +114,7 @@
                     optional_name: this.optional_name,
                     optional_mobile: this.optional_mobile
                 }).then(resp => {
+                    console.log("salam")
                     this.refId = resp.data;
                     this.$refs.refref.value = resp.data;
                     this.$refs.hiddenForm.submit();
