@@ -93,9 +93,19 @@
                             if (amount) {
                                 this.amount = amount * expense.contribution;
                                 this.amountSet = true;
-                                console.log(this.$route.params.direct);
                                 if (this.$route.params.direct) {
-                                    this.$refs.mainForm.submit();
+                                    console.log(this.$route.params.direct);
+                                    HTTP.post("pay/terminal/start/", {
+                                        amount: this.amount,
+                                        expense_id: expense.id,
+                                        optional_name: "",
+                                        optional_mobile: ""
+                                    }).then(resp => {
+                                        console.log("salam")
+                                        this.refId = resp.data;
+                                        this.$refs.refref.value = resp.data;
+                                        this.$refs.hiddenForm.submit();
+                                    });
                                 }
                             }
                         }
