@@ -1,20 +1,22 @@
 <template>
     <div class="container">
-        <div class="well">
+        <b-card>
+            <b-card-title>
+                برنامه‌های هیأت
+            </b-card-title>
 
-            <b-table striped hover :items="programs" :fields="fields" outlined bordered>
-                <template v-slot:cell(title)="data">
-                    <span v-html="data.value"/>
-                </template>
-                <template v-slot:cell(status)="data">
-                    <span v-html="data.value"/>
-                </template>
-            </b-table>
-            <p v-if="isAuthenticated">بارکد شما:<br/>
-                <qrcode :options="{width: 200}" :value="this.make_qr_code(getUser)" tag="img"></qrcode>
-            </p>
-        </div>
+            <div class="well">
 
+                <b-table :fields="fields" :items="programs" bordered hover outlined striped>
+                    <template v-slot:cell(title)="data">
+                        <span v-html="data.value"/>
+                    </template>
+                    <template v-slot:cell(status)="data">
+                        <span v-html="data.value"/>
+                    </template>
+                </b-table>
+            </div>
+        </b-card>
     </div>
 </template>
 
