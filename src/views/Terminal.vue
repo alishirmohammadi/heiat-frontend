@@ -7,8 +7,11 @@
                 </div>
                 <h1>{{fixedExpense.expense_name}}</h1>
             </div>
+            <h1>
+                {{global_name}}
+            </h1>
             <b-form @submit="onSubmit" ref="mainForm" v-if="status!=='success'">
-                <b-form-group label="مورد مصرف:" v-if="!fixedExpense">
+                <b-form-group :label="field_title" v-if="!fixedExpense">
                     <b-form-select :options="expenses" text-field="expense_name"
                                    v-model="chosenEspenseId" value-field="id"></b-form-select>
                 </b-form-group>
@@ -54,6 +57,8 @@
         data() {
             return {
                 expenses: [],
+                field_title: "مورد مصرف:",
+                global_name: "",
                 chosenEspenseId: null,
                 amount: "",
                 optional_name: "",
@@ -72,8 +77,26 @@
                     return _.find(this.expenses, {"id": Number(this.$route.params.expense_id)});
                 }
                 if (this.$route.params.expense_address) {
-                    return _.find(this.expenses, {
+                    var find = _.filter(this.expenses, {
                         "address": this.$route.params.expense_address
+                    });
+                    if (find.length === 1)
+                        return find[0];
+                    if (find.length < 1)
+                        return null;
+
+                    var global_name = find[0].expense_name.split("-")[0];
+                    console.log(global_name);
+                    this.global_name = global_name;
+
+                    console.log(this.global_name)
+
+                    var splitElement = find[0].expense_name.split("-")[1].split(':')[0];
+                    this.field_title = splitElement + ":";
+                    this.expenses = find.map(expense => {
+                        let a = expense;
+                        a.expense_name = a.expense_name.split(':')[1]
+                        return a;
                     });
                 }
                 return null;
@@ -103,7 +126,6 @@
                                         optional_name: "",
                                         optional_mobile: ""
                                     }).then(resp => {
-                                        console.log("salam")
                                         this.refId = resp.data;
                                         this.$refs.refref.value = resp.data;
                                         this.$refs.hiddenForm.submit();
@@ -126,7 +148,6 @@
                     optional_name: this.optional_name,
                     optional_mobile: this.optional_mobile
                 }).then(resp => {
-                    console.log("salam")
                     this.refId = resp.data;
                     this.$refs.refref.value = resp.data;
                     this.$refs.hiddenForm.submit();
