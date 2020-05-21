@@ -15,6 +15,9 @@
                     <b-form-select :options="expenses" text-field="expense_name"
                                    v-model="chosenEspenseId" value-field="id"></b-form-select>
                 </b-form-group>
+                <b-form-group :label="flag_title" v-if="has_flag">
+                    <b-form-checkbox v-model="flag_value">.</b-form-checkbox>
+                </b-form-group>
                 <b-form-group label="مبلغ (تومان):">
                     <b-form-input :disabled="amountSet" placeholder="مبلغ به تومان" required type="number"
                                   v-model="amount"></b-form-input>
@@ -66,6 +69,9 @@
                 status: "default",
                 refId: "",
                 amountSet: false,
+                flag_title: false,
+                has_flag: false,
+                flag_value: false,
             };
         },
         created() {
@@ -74,22 +80,28 @@
         computed: {
             fixedExpense() {
                 if (this.$route.params.expense_id) {
-                    return _.find(this.expenses, {"id": Number(this.$route.params.expense_id)});
+                    var expense = _.find(this.expenses, {"id": Number(this.$route.params.expense_id)});
+                    this.has_flag = expense.flag_title !== null;
+                    this.flag_title = expense.flag_title;
+                    return expense;
                 }
                 if (this.$route.params.expense_address) {
                     var find = _.filter(this.expenses, {
                         "address": this.$route.params.expense_address
                     });
-                    if (find.length === 1)
+                    if (find.length === 1) {
+                        this.has_flag = find[0].flag_title !== null;
+                        this.flag_title = find[0].flag_title;
                         return find[0];
+                    }
                     if (find.length < 1)
                         return null;
 
-                    var global_name = find[0].expense_name.split("-")[0];
-                    console.log(global_name);
-                    this.global_name = global_name;
+                    this.has_flag = find[0].flag_title !== null;
+                    console.log(find[0])
+                    this.flag_title = find[0].flag_title;
 
-                    console.log(this.global_name)
+                    this.global_name = find[0].expense_name.split("-")[0];
 
                     var splitElement = find[0].expense_name.split("-")[1].split(':')[0];
                     this.field_title = splitElement + ":";
@@ -124,7 +136,8 @@
                                         amount: this.amount,
                                         expense_id: expense.id,
                                         optional_name: "",
-                                        optional_mobile: ""
+                                        optional_mobile: "",
+                                        flag: this.flag_value
                                     }).then(resp => {
                                         this.refId = resp.data;
                                         this.$refs.refref.value = resp.data;
@@ -146,7 +159,8 @@
                     amount: this.amount,
                     expense_id: this.fixedExpense ? this.fixedExpense.id : this.chosenEspenseId,
                     optional_name: this.optional_name,
-                    optional_mobile: this.optional_mobile
+                    optional_mobile: this.optional_mobile,
+                    flag: this.flag_value
                 }).then(resp => {
                     this.refId = resp.data;
                     this.$refs.refref.value = resp.data;
