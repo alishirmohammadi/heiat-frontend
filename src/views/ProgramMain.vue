@@ -42,6 +42,16 @@
                         <span v-if="qa.var === 'multiple'" class="answer">
                             {{qa.answer_text ? qa.options[qa.answer_text] : 'پاسخ داده نشده'}}
                         </span>
+                        <span v-if="qa.var === 'file'" class="answer">
+                            <template v-if="qa.answer_file">
+                                <a v-bind:href="qa.answer_text">
+                                    مشاهده فایل
+                                </a>
+                            </template>
+                            <template v-else>
+                                فایلی ارسال نشده
+                            </template>
+                        </span>
                     </div>
                     <div v-if="!!$parent.program.registration.sum_payed">
                         <label>
