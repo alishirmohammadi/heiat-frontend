@@ -36,8 +36,11 @@
                         <label>
                             {{qa.title}}:
                         </label>
-                        <span class="answer">
+                        <span v-if="qa.var === 'yesno'" class="answer">
                             {{qa.yes?'بله':'خیر'}}
+                        </span>
+                        <span v-if="qa.var === 'multiple'" class="answer">
+                            {{qa.answer_text ? qa.options[qa.answer_text] : 'پاسخ داده نشده'}}
                         </span>
                     </div>
                     <div v-if="!!$parent.program.registration.sum_payed">
@@ -100,14 +103,25 @@
                             <input type="checkbox" v-model="newRegistration.coupling"/>
                             <hr>
                         </div>
-                        <div v-for="answer in newRegistration.answers">
+                        <div v-for="(question, i) in newRegistration.answers">
                             <span class="question-item">
-                              {{answer.title}}
+                              {{question.title}}
                                 :
                             </span>
-                            <input type="checkbox" v-model="answer.yes"/>
+                            <template v-if="question.var=='yesno'">
+                                <input type="checkbox" v-model="question.yes"/>
+                            </template>
+                            <template v-if="question.var=='multiple'">
+                                <template v-for="(x,i) in question.options">
+                                    <input type="radio" :value="i" v-model="question.answer_text">
+                                    <label>{{x}}</label>
+                                </template>
+                            </template>
+                            <template v-if="question.var=='file'">
+                                <input type="file" @change="fileChange" v-bind:id="'filein'+i">
+                            </template>
                             <p>
-                                {{answer.desc}}
+                                {{question.desc}}
                             </p>
                             <hr>
                         </div>
@@ -142,7 +156,6 @@
 
     export default {
         name: 'ProgramMain',
-
         data() {
             return {
                 status: 'default',
@@ -158,6 +171,19 @@
             this.$parent.$on('fetched', this.constructNewRegistration);
         },
         methods: {
+            fileChange(e) {
+                console.log(e);
+                const question = this.newRegistration.answers[e.target.id.slice(6)];
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    question.answer_file = e.target.result;             
+                    console.log(question);
+                };
+                reader.onerror = function(error) {
+                    alert(error);
+                };
+                reader.readAsDataURL(e.target.files[0]); 
+            },
             pay() {
                 this.status = 'sending'
                 HTTP.post('pay/registration/start/', {'registration_id': this.$parent.program.registration.id}).then(resp => {
@@ -181,8 +207,10 @@
                     if (!temp) {
                         this.newRegistration.answers.push({
                             question_id: question.id,
+                            var: question.var,
                             title: question.title,
                             desc: question.desc,
+                            options: question.var === 'multiple' ? question.params.split('-') : [],
                             yes: false
                         })
                     }
@@ -205,11 +233,16 @@
             answers: function () {
                 return _.map(this.$parent.program.users_questions, item => {
                     let ans = {
-                        title: item.title
+                        title: item.title,
+                        var: item.var,
+                        options: item.var === 'multiple' ? item.params.split('-') : [],
                     };
                     let found_answer = _.find(this.$parent.program.registration.answers, {'question': item.id})
                     if (found_answer) {
-                        ans['yes'] = found_answer.yes
+                        ans = {
+                            ...ans,
+                            ...found_answer,
+                        };
                     } else {
                         ans['yes'] = false
                     }
