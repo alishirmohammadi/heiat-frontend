@@ -44,7 +44,7 @@
                         </span>
                         <span v-if="qa.var === 'file'" class="answer">
                             <template v-if="qa.answer_file">
-                                <a v-bind:href="qa.answer_text">
+                                <a v-bind:href="qa.answer_file">
                                     مشاهده فایل
                                 </a>
                             </template>
