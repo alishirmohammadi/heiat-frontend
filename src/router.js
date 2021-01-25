@@ -154,6 +154,16 @@ export default new Router({
             component: () => import(/* webpackChunkName: "terminal" */ './views/Terminal.vue')
         },
         {
+            path: '/t/:expense_address?/:amount?',
+            name: 'Terminal',
+            component: () => import(/* webpackChunkName: "terminal" */ './views/Terminal.vue')
+        },
+        {
+            path: '/t/:expense_address?/:amount?/:direct?',
+            name: 'Terminal',
+            component: () => import(/* webpackChunkName: "terminal" */ './views/Terminal.vue')
+        },
+        {
             path: '/pay/terminal',
             name: 'Terminal',
             component: () => import(/* webpackChunkName: "terminal" */ './views/Terminal.vue')

@@ -7,7 +7,7 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap-v4-rtl/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'bootstrap-v4-rtl/dist/css/bootstrap-rtl.css'
-import './assets/Sahel/Farsi-Digits/css/style.css'
+import './assets/Samim/Farsi-Digits/css/style.css'
 import 'font-awesome/css/font-awesome.css';
 import './omid.css';
 import PDatePicker from 'vue2-persian-datepicker'

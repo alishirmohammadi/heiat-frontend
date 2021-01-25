@@ -5,40 +5,53 @@
 <template>
     <div>
         <b-container>
-            <b-form @submit="onSubmit" v-if="status!=='success'">
-                <b-form-group label="کدملی:">
-                    <b-form-input type="text"
-                                  v-model="username"
-                                  placeholder="کدملی خود را وارد کنید">
-                    </b-form-input>
-                    <span class="error" v-for="e in error.username">{{e}}</span>
-                </b-form-group>
-                <b-form-group label="گذرواژه:"
-                              description="گذرواژه باید حداقل ۸ حرف باشد و ترکیبی از اعداد و حروف باشد">
-                    <b-form-input v-model="password" type="password"
-                                  placeholder="گذرواژه را وارد کنید">
-                    </b-form-input>
-                    <span class="error" v-for="e in error.password">{{e}}</span>
-                </b-form-group>
+            <b-row>
+                <div class="col-sm-8 offset-sm-2">
 
-                <b-button type="submit" variant="success" :disabled="status==='sending'">
-                    <span v-show="status!=='sending'">ورود</span>
-                    <span v-show="status==='sending'">در حال ارسال</span>
-                </b-button>
-                <p class="error" v-if="status==='error'">
-                    ورود با مشکل مواجه شد
-                </p>
-            </b-form>
-            <p>
-                حساب کاربری ندارید؟ هم‌اکنون
-                <router-link :to="{name:'SignUp'}">ایجاد کنید</router-link>
-            </p>
-            <p>
-                <router-link :to="{name:'ResetPassword'}">
-                    گذرواژه خود را فراموش کرده‌اید؟
-                </router-link>
-            </p>
+                    <b-card>
+                        <b-card-title>
+                            سوالات متداول
+                        </b-card-title>
 
+                        <b-form @submit="onSubmit" v-if="status!=='success'">
+                            <b-form-group label="کدملی:">
+                                <b-form-input placeholder="کدملی خود را وارد کنید"
+                                              type="text"
+                                              v-model="username">
+                                </b-form-input>
+                                <span class="error" v-for="e in error.username">{{e}}</span>
+                            </b-form-group>
+                            <b-form-group description="گذرواژه باید حداقل ۸ حرف باشد و ترکیبی از اعداد و حروف باشد"
+                                          label="گذرواژه:">
+                                <b-form-input placeholder="گذرواژه را وارد کنید" type="password"
+                                              v-model="password">
+                                </b-form-input>
+                                <span class="error" v-for="e in error.password">{{e}}</span>
+                            </b-form-group>
+
+                            <b-form-group align="center">
+                                <b-button :disabled="status==='sending'" type="submit" variant="success">
+                                    <span v-show="status!=='sending'">ورود</span>
+                                    <span v-show="status==='sending'">در حال ارسال</span>
+                                </b-button>
+                            </b-form-group>
+                            <p class="error" v-if="status==='error'">
+                                ورود با مشکل مواجه شد
+                            </p>
+                        </b-form>
+                        <hr/>
+                        <p>
+                            حساب کاربری ندارید؟
+                            <router-link :to="{name:'SignUp'}">هم‌اکنون ایجاد کنید</router-link>
+                        </p>
+                        <p>
+                            <router-link :to="{name:'ResetPassword'}">
+                                گذرواژه خود را فراموش کرده‌اید؟
+                            </router-link>
+                        </p>
+                    </b-card>
+                </div>
+            </b-row>
         </b-container>
 
     </div>
@@ -54,35 +67,35 @@
 </style>
 
 <script>
-    import {AUTH_REQUEST,AUTH_LOGOUT} from '@/utils/constants'
+    import {AUTH_LOGOUT, AUTH_REQUEST} from '@/utils/constants'
 
     export default {
         name: 'Login',
-        data () {
+        data() {
             return {
-                status:'default',
+                status: 'default',
                 username: '',
                 password: '',
-                error:{
+                error: {
                     username: [],
                     password: [],
                 }
             }
         },
-        created(){
+        created() {
             this.$store.dispatch(AUTH_LOGOUT)
         },
         methods: {
             onSubmit: function (e) {
                 e.preventDefault()
-                this.status='sending'
-                const { username, password } = this
-                this.$store.dispatch(AUTH_REQUEST, { username, password }).then(() => {
-                    this.status='success'
+                this.status = 'sending'
+                const {username, password} = this
+                this.$store.dispatch(AUTH_REQUEST, {username, password}).then(() => {
+                    this.status = 'success'
                     this.$router.push('/')
-                }).catch(error=>{
-                    this.error=error.response.data
-                    this.status='error'
+                }).catch(error => {
+                    this.error = error.response.data
+                    this.status = 'error'
                 })
             }
         },
