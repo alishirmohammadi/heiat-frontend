@@ -129,6 +129,9 @@
                             </template>
                             <template v-if="question.var=='file'">
                                 <input type="file" @change="fileChange" v-bind:id="'filein'+i">
+                                <p class="error" v-if="question.file_is_big">
+                                    فایل ارسالی حداکثر باید یک مگابایت باشد.
+                                </p>
                             </template>
                             <p>
                                 {{question.desc}}
@@ -162,7 +165,7 @@
     import {HTTP} from '../utils/index';
     import {mapGetters} from 'vuex'
     import {STATUS_CHOICES} from '@/utils/choices'
-
+    import Vue from 'vue';
 
     export default {
         name: 'ProgramMain',
@@ -186,7 +189,12 @@
                 const question = this.newRegistration.answers[e.target.id.slice(6)];
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    question.answer_file = e.target.result;             
+                    if (e.target.result.length > 1500000) {
+                        Vue.set(question, 'file_is_big', true);
+                    }
+                    else {
+                        question.answer_file = e.target.result;             
+                    }
                     console.log(question);
                 };
                 reader.onerror = function(error) {
