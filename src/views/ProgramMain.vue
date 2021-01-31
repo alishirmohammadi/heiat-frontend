@@ -152,6 +152,11 @@
 
                     </div>
                 </div>
+                <div>
+                    <a v-if="$parent.program.donate_link" v-bind:href="$parent.program.donate_link">
+                        {{$parent.program.donate_text}}
+                    </a>
+                </div>
             </b-col>
         </b-row>
         <form ref="hiddenForm" action="https://bpm.shaparak.ir/pgwchannel/startpay.mellat" method="POST">
