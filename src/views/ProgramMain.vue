@@ -238,6 +238,7 @@
                 this.status = 'sending'
                 HTTP.post('program/register/'+this.$parent.program.id+'/', this.newRegistration).then(resp => {
                     this.$parent.program.registration=resp.data;
+                    this.status = 'default';
                 }).catch(error => {
                     this.status = 'error'
                 })
