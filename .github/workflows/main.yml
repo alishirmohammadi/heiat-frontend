@@ -28,4 +28,4 @@ jobs:
           script: |
             cd ~/heiat/frontend
             git pull
-            yarn run build
+            npm run build
