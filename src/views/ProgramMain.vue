@@ -218,7 +218,7 @@
                 })
             },
             giveUp() {
-                this.$dialog.confirm('آیا مطمئنید که می‌خواهید انصراف بدهید؟').then(dialog => {
+                this.$dialog.confirm('آیا مطمئنید که می‌خواهید انصراف بدهید؟ بعد از انصراف دیگر نمی توانید ثبت نام کنید.').then(dialog => {
                     HTTP.post('registration/give_up/', {'registration_id': this.$parent.program.registration.id}).then(resp => {
                         this.$parent.program.registration.status = 'given up'
                     })
