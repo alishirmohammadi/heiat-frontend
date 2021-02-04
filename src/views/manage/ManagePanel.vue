@@ -354,7 +354,9 @@
         computed: {
             ...mapGetters(['getUser', 'isAuthenticated', 'isProfileLoaded', 'isProfileCompleted', 'isMarried']),
             years() {
-                let year = Number(this.$parent.program.year.toString().slice(-2))
+                const y = this.$parent.program.year;
+                if (y == undefined) return [];
+                let year = Number(y.toString().slice(-2))
                 return [...Array(year + 1).keys()].slice(year - 4)
             },
             questions() {
