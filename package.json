@@ -15,7 +15,7 @@
     "file-saver": "^2.0.2",
     "font-awesome": "^4.7.0",
     "loadsh": "0.0.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment-jalaali": "^0.7.4",
     "persianjs": "^0.4.0",
     "vue": "^2.6.11",
