@@ -66,6 +66,7 @@
                                 program.status += `&nbsp;<a href="/help/status"><sub>(راهنما)</sub></a>`;
                             return program
                         });
+			programs.reverse();
                         this.programs = programs;
                     })
                     .catch((err) => {
